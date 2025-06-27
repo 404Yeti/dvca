@@ -1,3 +1,5 @@
+<img src="assets/dvca-logo.png" width="300" />
+
 💀 DVCA - Damn Vulnerable Chat App
 
 A full-stack, real-time, purposely insecure chat application built with Go, WebSockets, SQLite, and a terminal-style frontend. Designed for learning, hacking, and red team/CTF-style training.
