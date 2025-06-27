@@ -1,4 +1,4 @@
-<img src="assets/dvca-logo.png" width="300" />
+<img src="assets/dvca.png" width="300" />
 
 💀 DVCA - Damn Vulnerable Chat App
 
