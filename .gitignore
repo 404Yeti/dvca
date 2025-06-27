@@ -1,0 +1,15 @@
+# ignore sqlite db
+*.db
+
+# ignore Go binaries
+*.exe
+*.out
+*.test
+
+# ignore editor and OS temp files
+.DS_Store
+*.swp
+*.log
+
+# ignore node_modules (if you ever add npm frontend)
+node_modules/

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>DVCA - Damn Vulnerable Chat App</title>
+  <style>
+    body {
+      background: #0f0f0f;
+      color: #00ff99;
+      font-family: "Courier New", monospace;
+      margin: 0;
+      padding: 20px;
+    }
+
+    #chat-box {
+      border: 1px solid #00ff99;
+      padding: 10px;
+      height: 400px;
+      overflow-y: scroll;
+      background: #111;
+      margin-bottom: 10px;
+    }
+
+    input, button {
+      background: #222;
+      color: #00ff99;
+      border: 1px solid #00ff99;
+      padding: 8px;
+      font-size: 14px;
+      font-family: "Courier New", monospace;
+    }
+
+    #message {
+      width: 300px;
+    }
+  </style>
+</head>
+<body>
+  <h2>💀 DVCA - Damn Vulnerable Chat App</h2>
+
+  <div id="login-section">
+    <p><strong>Login</strong> (Client-side token, totally insecure)</p>
+    <input id="login-name" type="text" placeholder="Enter your username..." />
+    <select id="login-role">
+      <option value="user">User</option>
+      <option value="admin">Admin</option> <!-- 👀 open to abuse -->
+    </select>
+    <button onclick="login()">Login</button>
+  </div>
+
+  <div id="chat-section" style="display:none;">
+    <p>
+      🔓 Logged in as: <span id="current-user"></span> |
+      Role: <span id="current-role"></span>
+      <button onclick="logout()" style="margin-left: 10px;">Logout</button>
+    </p>
+
+    <!-- 🔥 Admin Panel -->
+    <div id="admin-panel" style="display:none; margin-bottom: 10px; border: 1px dashed red; padding: 10px;">
+      <h4>🛑 Admin Panel (Token-based access)</h4>
+      <button onclick="sendShutdown()">Send Shutdown Notice</button>
+    </div>
+
+    <!-- 🏁 Hidden Flag -->
+    <div id="flag-box" style="display:none; margin-bottom: 10px; border: 1px dashed yellow; padding: 10px;">
+      🏁 <strong>FLAG:</strong> DVCA{Y0u_4r3_4dm1n_H3ck3r}
+    </div>
+
+    <div id="chat-box"></div>
+    <input id="message" type="text" placeholder="Type your message..." />
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <script>
+    let ws;
+    let user = null;
+    let role = null;
+
+    const chatSection = document.getElementById("chat-section");
+    const loginSection = document.getElementById("login-section");
+    const chatBox = document.getElementById("chat-box");
+    const messageInput = document.getElementById("message");
+
+    function decodeToken() {
+      const token = localStorage.getItem("dvca_token");
+      if (!token) return null;
+      try {
+        return JSON.parse(atob(token));
+      } catch {
+        return null;
+      }
+    }
+
+    function login() {
+      const name = document.getElementById("login-name").value.trim();
+      const role = document.getElementById("login-role").value;
+
+      if (!name) return alert("You need a name, skid!");
+
+      const payload = {
+        user: name,
+        role: role
+      };
+
+      const encoded = btoa(JSON.stringify(payload));
+      localStorage.setItem("dvca_token", encoded);
+      location.reload();
+    }
+
+    function logout() {
+      localStorage.removeItem("dvca_token");
+      location.reload();
+    }
+
+    function startChat() {
+      const decoded = decodeToken();
+      if (!decoded) return;
+
+      user = decoded.user;
+      role = decoded.role;
+
+      loginSection.style.display = "none";
+      chatSection.style.display = "block";
+      document.getElementById("current-user").textContent = user;
+      document.getElementById("current-role").textContent = role;
+
+      // 🔓 Frontend-only role check
+      if (role === "admin") {
+        document.getElementById("admin-panel").style.display = "block";
+        document.getElementById("flag-box").style.display = "block";
+      }
+
+      ws = new WebSocket("ws://localhost:8090/ws");
+
+      ws.onopen = () => logMessage(`[Connected as ${user}]`);
+      ws.onmessage = (event) => logMessage(event.data);
+      ws.onclose = () => logMessage("[Disconnected]");
+    }
+
+    function sendMessage() {
+      const msg = messageInput.value;
+      const payload = {
+        sender: user,
+        content: msg
+      };
+      ws.send(JSON.stringify(payload));
+      messageInput.value = "";
+    }
+
+    function sendShutdown() {
+      const payload = {
+        sender: "admin",
+        content: "<b>[SYSTEM]</b> The server will shut down in 30 seconds. Save your flags!"
+      };
+      ws.send(JSON.stringify(payload));
+    }
+
+    function logMessage(msg) {
+      const div = document.createElement("div");
+      div.innerHTML = msg;
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // 🔁 Auto-login if token exists
+    const token = localStorage.getItem("dvca_token");
+    if (token) {
+      startChat();
+    }
+
+    messageInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") sendMessage();
+    });
+  </script>
+</body>
+</html>
