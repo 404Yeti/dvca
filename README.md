@@ -1,53 +1,41 @@
 <img src="assets/dvca.png" width="300" />
 
-💀 DVCA - Damn Vulnerable Chat App
+DVCA - Damn Vulnerable Chat App
 
 A full-stack, real-time, purposely insecure chat application built with Go, WebSockets, SQLite, and a terminal-style frontend. Designed for learning, hacking, and red team/CTF-style training.
 
-🚀 Features
+Features
 
 Feature
 
 Purpose
 
-🧑‍💻 WebSocket-based Chat
+WebSocket-based Chat
 
 Real-time backend logic in Go
 
-🧠 Fake JWT Auth System
+Fake JWT Auth System
 
 Token tampering & privilege escalation demo
 
-🛑 Admin Panel + Flag
+Admin Panel + Flag
 
 Broken access control + reward system
 
-🤖 AI Bot Microservice
+AI Bot Microservice
 
 Responds to @ai commands insecurely
 
-💾 SQLite + Go API
+SQLite + Go API
 
 Stores messages, allows SQLi
 
-🧪 Insecure Endpoints
+Insecure Endpoints
 
 Perfect for Postman, Burp, or curl testing
 
-📂 Project Structure
 
-DVCA/
-├── cmd/
-│   ├── chatserver/        # main.go (WebSocket server)
-│   ├── api/               # dvca-api.go (SQLite API server)
-│   └── bot/               # bot.go (AI bot client)
-├── static/
-│   └── index.html         # Terminal-style frontend
-├── go.mod / go.sum        # Go modules
-├── .gitignore             # Ignore db and binaries
-└── README.md              # You're here
-
-🛠️ Setup Instructions
+Setup Instructions
 
 1. Clone the repo
 
@@ -79,39 +67,39 @@ go run bot.go
 
 open static/index.html  # or double-click it
 
-🎯 Challenges (Try These!)
+Challenges (Try These!)
 
-🧪 Tamper with the JWT using DevTools:
+Tamper with the JWT using DevTools:
 
 localStorage.setItem("dvca_token", btoa(JSON.stringify({user: "hacker", role: "admin"})));
 location.reload();
 
-✅ Access Admin Panel and reveal the flag!
+Access Admin Panel and reveal the flag!
 
-🔍 SQL Injection
+SQL Injection
 
 GET /api/messages?user=' OR 1=1--
 
-✅ Dump all messages from the database.
+Dump all messages from the database.
 
-🧠 Interact with the AI Bot
+Interact with the AI Bot
 
 @ai help
 @ai joke
 @ai hack
 
-✅ Bot responds without auth checks.
+Bot responds without auth checks.
 
-💬 Send malicious messages
+Send malicious messages
 Try this:
 
 <script>alert(document.cookie)</script>
 
-✅ Simulate XSS in the chat.
+Simulate XSS in the chat.
 
-🔥 Create your own flag or admin-only endpoint
+Create your own flag or admin-only endpoint
 
-📦 Future Ideas
+Future Ideas
 
 Docker support
 
@@ -121,17 +109,17 @@ Secured version (DVCA-Pro)
 
 Deploy to Heroku/VPS
 
-💡 Credits
+Credits
 
-Created by Robbie (@yourhandle)
+Created by 404Yeti
 
 Inspired by DVWA, Juice Shop, and hacker playgrounds everywhere. Built to teach and break things.
 
-🏁 FLAG EXAMPLE
+FLAG EXAMPLE
 
 DVCA{Y0u_4r3_4dm1n_H3ck3r}
 
-🔓 Disclaimer
+Disclaimer
 
 This application is purposely insecure. DO NOT deploy it in a production environment. It is for educational, ethical hacking, and red team training purposes only.
 
